@@ -1,0 +1,21 @@
+package com.jpa.repository;
+
+import javax.persistence.EntityManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.in28minutes.jpa.hibernate.demo.entity.Course;
+
+public class CourseRepository {
+
+	@Autowired
+	private EntityManager em;
+	
+	public Course findById(Long id) {
+		Course course = em.find(Course.class, id);
+		logger.info("Course -> {}", course);
+		return course;
+	}
+	
+	
+}

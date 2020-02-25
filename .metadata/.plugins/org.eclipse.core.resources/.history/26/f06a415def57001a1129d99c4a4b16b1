@@ -1,0 +1,12 @@
+package com.jpa.repository;
+
+import javax.persistence.EntityManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class CourseRepository {
+
+	@Autowired
+	private EntityManager em;
+	
+}

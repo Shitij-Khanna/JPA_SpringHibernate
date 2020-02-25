@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="CourseRepositoryTest" project="JPA_Spring_Hibernate" tests="2" started="2" failures="0" errors="0" ignored="0">
+  <testsuite name="com.jpa.repository.CourseRepositoryTest" time="1.069" displayname="CourseRepositoryTest" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]">
+    <testcase name="deleteById_basic" classname="com.jpa.repository.CourseRepositoryTest" time="1.061" displayname="deleteById_basic" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:deleteById_basic(com.jpa.repository.CourseRepositoryTest)]"/>
+    <testcase name="findById_basic" classname="com.jpa.repository.CourseRepositoryTest" time="0.008" displayname="findById_basic" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:findById_basic(com.jpa.repository.CourseRepositoryTest)]"/>
+  </testsuite>
+</testrun>
