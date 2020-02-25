@@ -3,7 +3,10 @@ package com.jpa.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +38,30 @@ public class CourseRepositoryTest {
 		assertEquals("JPA in 50 Steps", course.getName());
 	}
 
+	@Test
+	public void findAll_Query() {
+		TypedQuery<Course> query = em.createQuery("Select c from Course c", Course.class);
+		List<Course> courses = query.getResultList();
+		logger.info("Courses Retrieved {} : ", courses);
+//		assertEquals("JPA in 50 Steps", course.getName());
+	}
+	
+	@Test
+	public void findAll_NamedQuery() {
+		TypedQuery<Course> query = em.createNamedQuery("query_get_all_courses", Course.class);
+		List<Course> courses = query.getResultList();
+		logger.info("Courses Retrieved {} : ", courses);
+//		assertEquals("JPA in 50 Steps", course.getName());
+	}
+	
+	@Test
+	public void findByWhere_NamedQuery() {
+		TypedQuery<Course> query = em.createNamedQuery("query_get_100_Step_courses", Course.class);
+		List<Course> coursesLike100Steps = query.getResultList();
+		logger.info("Courses like 100 steps Retrieved {} : ", coursesLike100Steps);
+//		assertEquals("JPA in 50 Steps", course.getName());
+	}
+
 	/**
 	 * @@DirtiesContext ensures that data deleted is inserted back into the DB, bcoz
 	 *                  from test cases it is not a good habit to delete data..
@@ -54,7 +81,7 @@ public class CourseRepositoryTest {
 		Course course = repository.findById(10001L);
 		assertEquals("JPA in 50 Steps", course.getName());
 
-		// update details
+		// update details // test the update scenario
 		course.setName("JPA in 50 Steps - Updated");
 		repository.save(course);
 
@@ -62,5 +89,11 @@ public class CourseRepositoryTest {
 		Course course1 = repository.findById(10001L);
 		assertEquals("JPA in 50 Steps - Updated", course1.getName());
 	}
-	
+
+	@Test
+	@DirtiesContext
+	public void playWithEntityManager() {
+		repository.playWithEntityManager();
+	}
+
 }

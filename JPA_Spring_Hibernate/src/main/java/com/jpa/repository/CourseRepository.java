@@ -45,12 +45,17 @@ public class CourseRepository {
 		em.remove(course);
 	}
 
+	/**
+	 * 
+	 */
 	public void playWithEntityManager() {
 		Course course1 = new Course("Web Services in 100 Steps");
 		em.persist(course1);
 
 		Course course2 = findById(10001L);
 
+		// Updates the entity in database, because it is still in purview of the EM, txn
+		// has not been closed and object is updated, so EM updates the object in DB.
 		course2.setName("JPA in 50 Steps - Updated");
 
 	}

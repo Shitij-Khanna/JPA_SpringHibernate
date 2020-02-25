@@ -28,7 +28,7 @@ public class JpaSpringHibernateApplication implements CommandLineRunner {
 //				courseRepository.findById(10001L).getName());
 
 //		courseRepository.deleteById(10001L);
-		courseRepository.save(new Course("Microservice course"));
+//		courseRepository.playWithEntityManager();
 
 	}
 

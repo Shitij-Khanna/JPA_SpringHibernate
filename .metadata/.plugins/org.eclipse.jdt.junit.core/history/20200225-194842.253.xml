@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="CourseRepositoryTest" project="JPA_Spring_Hibernate" tests="5" started="5" failures="0" errors="0" ignored="0">
+  <testsuite name="com.jpa.repository.CourseRepositoryTest" time="21.974" displayname="CourseRepositoryTest" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]">
+    <testcase name="playWithEntityManager" classname="com.jpa.repository.CourseRepositoryTest" time="1.384" displayname="playWithEntityManager" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:playWithEntityManager(com.jpa.repository.CourseRepositoryTest)]"/>
+    <testcase name="deleteById_basic" classname="com.jpa.repository.CourseRepositoryTest" time="1.293" displayname="deleteById_basic" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:deleteById_basic(com.jpa.repository.CourseRepositoryTest)]"/>
+    <testcase name="findById_Query" classname="com.jpa.repository.CourseRepositoryTest" time="19.24" displayname="findById_Query" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:findById_Query(com.jpa.repository.CourseRepositoryTest)]"/>
+    <testcase name="findById_basic" classname="com.jpa.repository.CourseRepositoryTest" time="0.011" displayname="findById_basic" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:findById_basic(com.jpa.repository.CourseRepositoryTest)]"/>
+    <testcase name="save_basic" classname="com.jpa.repository.CourseRepositoryTest" time="0.046" displayname="save_basic" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.CourseRepositoryTest]/[test:save_basic(com.jpa.repository.CourseRepositoryTest)]"/>
+  </testsuite>
+</testrun>
