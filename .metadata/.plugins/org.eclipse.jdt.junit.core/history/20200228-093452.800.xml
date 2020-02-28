@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="StudentRepositoryTest" project="JPA_Spring_Hibernate" tests="2" started="2" failures="0" errors="0" ignored="0">
+  <testsuite name="com.jpa.repository.StudentRepositoryTest" time="14.295" displayname="StudentRepositoryTest" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.StudentRepositoryTest]">
+    <testcase name="retrievePassportAndAssociatedStudent" classname="com.jpa.repository.StudentRepositoryTest" time="13.287" displayname="retrievePassportAndAssociatedStudent" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.StudentRepositoryTest]/[test:retrievePassportAndAssociatedStudent(com.jpa.repository.StudentRepositoryTest)]"/>
+    <testcase name="retrieveStudentAndPassportDetails" classname="com.jpa.repository.StudentRepositoryTest" time="1.008" displayname="retrieveStudentAndPassportDetails" uniqueid="[engine:junit-vintage]/[runner:com.jpa.repository.StudentRepositoryTest]/[test:retrieveStudentAndPassportDetails(com.jpa.repository.StudentRepositoryTest)]"/>
+  </testsuite>
+</testrun>

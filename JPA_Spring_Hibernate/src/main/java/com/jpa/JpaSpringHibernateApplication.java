@@ -7,8 +7,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.jpa.entity.Course;
+import com.jpa.entity.Student;
 import com.jpa.repository.CourseRepository;
+import com.jpa.repository.StudentRepository;
 
 @SpringBootApplication
 public class JpaSpringHibernateApplication implements CommandLineRunner {
@@ -17,6 +18,9 @@ public class JpaSpringHibernateApplication implements CommandLineRunner {
 
 	@Autowired
 	private CourseRepository courseRepository;
+
+	@Autowired
+	private StudentRepository studentRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JpaSpringHibernateApplication.class, args);
@@ -29,6 +33,8 @@ public class JpaSpringHibernateApplication implements CommandLineRunner {
 
 //		courseRepository.deleteById(10001L);
 //		courseRepository.playWithEntityManager();
+		
+//		studentRepository.saveStudentWithPassport();
 
 	}
 
