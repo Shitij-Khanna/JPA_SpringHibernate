@@ -139,6 +139,111 @@ You can only query on the child classes, which have entities.
 Actually, there is not inheritance between the tables here.
 There is just some common data between the 2 tables.
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ACID properties
+
+Atomicity :
+Basic thing that a transaction should do. Either all steps of the transaction should be successful, or all should be rolled back / failed.
+
+Consistency / Concurrency:
+There can be many transactions happening in parallel.
+Any transaction should leave the system in a consistent state.
+E.g bank transaction : If the txn where the money is being transferred from Account A to Account B -> If the money being added to account B fails, then money should not be deducted from account A as well.
+If it is deducted from A but not added to B, it leaves the system in an inconsistent state.
+
+Isolation:
+If there are many transactions running in parallel.
+If a transaction 1 is updating account A's value, in between another txn tries to read the value of A, will it get the correct value of A updated.
+This is determined by Isolation.
+Changes within a txn are visible to other ones. What level of changes in a transactionu want to be visible outside the transaction at that moment ?
+
+Durability:
+Any change that you make is durable. If the transaction was completed, but the system crashed after that or something like that happened, the changes made by the transaction should be persisted and durable.
+
+When data is being updated by one transaction and being read by another transaction, how do we manage it ? 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Below are 3 types of problems which occur with transactions : 
+
+Dirty Reads , Non Repeatable Reads and Phanthom Reads : 
+
+Dirty Reads : 
+Dirty read is another transaction reading the modified value of one transaction before the transaction is committed.
+Txn 2 is reading value of transaction 1 before 1 has been committed.
+
+Non Repeatable Reads :
+Consider a table Person with 3 rows : id, name and age
+
+We execute 3 queries : 
+
+select * from person where age = 10;
+update person set name = "B" where age = 10;
+select * from person where age = 10;
+
+Here we execute a query initially, where we execute a query to read values from person table, but in the 2nd step we update the row.
+So when we read this again in the next step, we dont get the same value.
+This is called non-repeatable read, i.e. when we are reading the same value twice in a transaction, but in between the value has been updated by some other transaction, so we dont get the same value the second time. 
+
+
+Phanthom Reads : 
+select * from person where between 10 and 20;
+insert into person -->  age =15, name = "X"
+select * from person where between 10 and 20;
+
+A query is executed at the first step,
+
+but in between there is a record inserted, so when the query is executed again, it gives new results.
+This is called phanthom read
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Now, we discuss 4 types of isolation levels, and how they help solve the problems : 
+
+1. Read uncommitted : 
+It does not wait for transaction to be committed for other transactions to read it.
+As soon as it changes the value, it is readable by the other transaction.
+It does not have any locks at all.
+It does not solve any problems of the 3 defined above .
+
+2. Read Committed : 
+A transaction would be able to read data of another transaction,only if that data has been committed by the other transaction.
+any data changed during txn will be available only after it has been committed.
+So, there will be no DIRTY READS.
+non repeatable and phanthom reads are still possible.
+
+3. Repeatable Reads : 
+This, does not only lock the modified values in the transaction, but also locks the values that were read during the transaction.
+If the query : select * from person where age = 10;
+was executed during the transaction, and the row was read, then the row/object would be locked.
+Until the transaction is completed, it remains locked. Once the txn is completed, the lock is released and it's value can be modified by other transactions.
+Here, both DIRTY READS and Non repeatable Reads are solved.
+Not the phanthom read -> because data can be inserted.
+
+4. Serializable : 
+Solves all problems.
+When a query is executed : select * from person where between 10 and 20;
+A lock is created for any row which matches this constraint.
+Whether a txn is trying to insert or delete or modify data which matches this constraint (10-20), it wont be allowed to do so.
+Thisi solves all problems.
+
+Choosing between isolation levels : 
+When we use Serializable, we wont have any of the dirty reads, phanthom reads, or non repeatable reads. However, we will have very bad performance.
+If we are reading a table in a txn, and there are 5000 txns running in parallel, then each txn would have to wait for the first one to complete.
+so, we have to consider our application before trying to put the transaction level.
+Typically, the level used is Read Committed.
+It is a balance between the integrity of data and the performance of the system.
+
+You dont really lock a lot of stuff, and system data is decently consistent.
+
+you can also have different isolation levels in the same application for different scenarios.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+There is a @transactional annotation in JPA and in Spring.
+
+When we are talking to just 2 DB, JPa annotation is sufficient.
+When trying to communicate with multiple DBs, queues etc, we should use the one provided by Spring.
+
+When using Spring @transactional annotation, you can define isolation level.
 
 
 
