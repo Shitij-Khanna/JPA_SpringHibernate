@@ -22,6 +22,8 @@ import com.jpa.JpaSpringHibernateApplication;
 import com.jpa.entity.Course;
 import com.jpa.entity.Review;
 
+import net.sf.ehcache.CacheManager;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = JpaSpringHibernateApplication.class)
 public class CourseRepositoryTest {
@@ -30,7 +32,7 @@ public class CourseRepositoryTest {
 
 	@Autowired
 	CourseRepository repository;
-	
+
 	@Autowired
 	EntityManager em;
 
@@ -69,18 +71,19 @@ public class CourseRepositoryTest {
 	 *                  from test cases it is not a good habit to delete data..
 	 *                  Spring automatically resets the data after the test is run
 	 */
-//	@Test
+	@Test
 	@DirtiesContext
 	public void deleteById_basic() {
 //		repository.deleteById(10002L);
 //		assertNull(repository.findById(10002L));
 	}
 
-//	@Test
+	@Test
 	@DirtiesContext
 	public void save_basic() {
 		// get a course
 		Course course = repository.findById(10001L);
+		
 //		assertEquals("JPA in 50 Steps", course.getName());
 
 		// update details // test the update scenario
@@ -93,18 +96,34 @@ public class CourseRepositoryTest {
 
 		Course course2 = new Course("JPA in 666 min");
 		repository.save(course2);
+	
 		logger.info("Courses Retrieved {} : ", course2.getId());
 
 	}
+	
+	@Test
+	public void testCache() {
+		int sizeBeforeCache = CacheManager.ALL_CACHE_MANAGERS.get(0)
+				  .getCache("com.jpa.entity.Course").getSize();
+		Course course = repository.findById(10001L);
+		int size = CacheManager.ALL_CACHE_MANAGERS.get(0)
+				  .getCache("com.jpa.entity.Course").getSize();
+		logger.info("Size of cache : {}" + size);
+		
+		Course course2 = repository.findById(10001L);
+		repository.findById(10001L);
+		repository.findById(10001L);
+		repository.findById(10001L);
+		repository.findById(10002L);
+	}
 
-//	@Test
+	@Test
 	@DirtiesContext
 	public void playWithEntityManager() {
 		repository.playWithEntityManager();
 	}
 
-
-//	@Test
+	@Test
 	@Transactional
 	public void addHardCodedReviews() {
 		List<Review> reviews = new ArrayList<>();
@@ -122,7 +141,7 @@ public class CourseRepositoryTest {
 		Course course2 = repository.findById(10001L);
 		logger.info("{}", course2.getReviews());
 	}
-	
+
 	@Test
 	@Transactional
 	public void retrieveCourseForReview() {

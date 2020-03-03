@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jpa.entity.Course;
 import com.jpa.entity.Passport;
 import com.jpa.entity.Student;
 
@@ -45,7 +46,28 @@ public class StudentRepository {
 		Student student = new Student("Mike");
 
 		student.setPassport(passport);
+//		em.flush();
+		logger.info("After flush : " + student.getName());
+		student.setName("Mohan");
 		em.persist(student);	
 	}
+	
+	public void insertHardcodedStudentAndCourse(){
+		Student student = new Student("Jamil");
+		Course course = new Course("Elasticsearch Logstash and Kibana");
+		em.persist(student);
+		em.persist(course);
+		
+		student.addCourse(course);
+		course.addStudent(student);
+		em.persist(student);
+	}
 
+	public void insertStudentAndCourse(Student student, Course course){
+		student.addCourse(course);
+		course.addStudent(student);
+
+		em.persist(student);
+		em.persist(course);
+	}
 }

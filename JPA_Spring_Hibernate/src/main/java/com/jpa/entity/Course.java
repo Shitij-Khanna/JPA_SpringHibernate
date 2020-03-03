@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -20,7 +21,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "Course")
 @NamedQueries(value = { @NamedQuery(name = "query_get_all_courses", query = "Select  c  From Course c"),
-		@NamedQuery(name = "query_get_100_Step_courses", query = "Select  c  From Course c where name like '%100 Steps'") })
+		@NamedQuery(name = "query_get_100_Step_courses", query = "Select  c  From Course c where name like '%100 Steps'"),
+		@NamedQuery(name = "query_AWS", query="Select c from Course c where name = 'AWS'")})
+@Cacheable
 public class Course {
 
 	@Id
@@ -42,6 +45,12 @@ public class Course {
 	// many relations have to be fetched
 	@OneToMany(mappedBy = "course")
 	private List<Review> reviews = new ArrayList<Review>();
+
+	// in many to many, there is no owning side of the relationship, so we can
+	// define mapped by on any side
+	// A separate join table is created with student id and course id mapping
+	@ManyToMany(mappedBy = "courses")
+	private List<Student> students = new ArrayList<Student>();
 
 	protected Course() {
 	}
@@ -76,6 +85,14 @@ public class Course {
 
 	public void removeReview(Review review) {
 		this.reviews.remove(review);
+	}
+
+	public List<Student> getStudents() {
+		return students;
+	}
+
+	public void addStudent(Student student) {
+		this.students.add(student);
 	}
 
 	@Override
