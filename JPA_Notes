@@ -397,4 +397,14 @@ There are hooks to various repository methods :
 
 @PreRemove
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Embedded and Embeddable : 
+
+If there is an object in my Student class, lets say Address, but I want it embedded always in my student object. I do not want it one to one mapped etc, I want it embedded always.
+Then I use @embedded on the field inside the entity class, and @embeddable on the class which has to be embedded.
+
+Using embedded, the java object is a separate object in the entity, but internally, the fields of the embedded object, i.e. Address in this case, they are just new columns in the same entity. A new entity is not created for that object, because it is embedded.
+So the city, street etc would become part of the student table only, but when read, hibernate would convert it into a separate object inside the student class .
+
 @PreUpdate
