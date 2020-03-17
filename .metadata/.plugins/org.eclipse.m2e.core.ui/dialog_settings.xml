@@ -6,6 +6,7 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="C:\JPA\JPA_Spring_Hibernate"/>
 			<item value="C:\Spring_Complete_Projects\jpa-with-hibernate-master"/>
 			<item value="C:\SpringMicroservices\Microservices_Spring\Users"/>
 		</list>
