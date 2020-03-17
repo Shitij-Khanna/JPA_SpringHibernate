@@ -1,3 +1,5 @@
+JPA- Spring Data JPA and Hibernate
+
 -- Hibernate uses a sequence to insert values when inserting data with @generatedValue for ID.
 
 -- Entity needs to have adefault constructor with no parameters
@@ -244,12 +246,165 @@ When we are talking to just 2 DB, JPa annotation is sufficient.
 When trying to communicate with multiple DBs, queues etc, we should use the one provided by Spring.
 
 When using Spring @transactional annotation, you can define isolation level.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4. Pagination and sorting techniques
+4.1. Paging WITHOUT sorting
+To apply only pagination in result set, we shall create Pageable object without any Sort information.
+
+Pageable paging = PageRequest.of(pageNo, pageSize);
+ 
+Page<EmployeeEntity> pagedResult = repository.findAll(paging); 
+
+
+4.2. Paging WITH sorting
+To apply only pagination in result set, we shall create Pageable object with desired Sort column name.
+
+Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("email"));
+ 
+Page<EmployeeEntity> pagedResult = repository.findAll(paging);
+By default, records are ordered in DESCENDING order. To choose ASCENDING order, use .ascending() method.
+
+Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("email").ascending()); 
+ 
+Page<EmployeeEntity> pagedResult = repository.findAll(paging); 
+
+4.3. Sorting only
+If there is no need to page, and only sorting is required, we can create Sort object for that.
+
+Sort sortOrder = Sort.by("email"); 
+ 
+List<EmployeeEntity> list = repository.findAll(sortOrder);
+If we wish to apply sorting on multiple columns or group by sort, then that is also possible by creating Sort using simple builder pattern steps.
+
+Sort emailSort = Sort.by("email"); 
+Sort firstNameSort = Sort.by("first_name"); 
+ 
+Sort groupBySort = emailSort.and(firstNameSort);
+ 
+List<EmployeeEntity> list = repository.findAll(groupBySort);
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5. Difference between Page and Slice
+5.1. Page
+The findAll(Pageable pageable) method by default returns a Page object. A Page object provides lots of extra useful information other than just list of employees in current page.
+
+E.g. A Page object has the number of total pages, number of the current page and well as whether current page is first page or last page.
+
+Finding total pages invokes an additional count() query causing an extra overhead cost. Be sure when you are using it.
+
+5.2. Slice
+Slice is very much similar to Page, except it does not provide the number of total pages in database. It helps in improving performance when we do not need to display total number pages in UI.
+
+Generally, Slice is used in case navigation is consist of Next page and Previous page links.
+
+To use Slice, we have implement our own custom methods.
+
+EmployeeRepository.java
+public interface EmployeeRepository extends CrudRepository<EmployeeEntity, Long> 
+{
+    public Slice<EmployeeEntity> findByFirstName(String firstName, Pageable pageable);
+}
+Remember that is we use PagingAndSortingRepository, default return type is Page.
+
+Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("email").descending()); 
+ 
+Slice<EmployeeEntity> slicedResult = repository.findByFirstName("alex", paging); 
+ 
+List<EmployeeEntity> employeeList = slicedResult.getContent();
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6. Spring boot paging and sorting demo
+In this demo, default page number is 0, page size is 10 and default sort column is ‘id’.
+
+Now here are differnt types of URLs, which can be used for different types of paging and sorting options.
+
+http://localhost:8080/employees?pageSize=5
+http://localhost:8080/employees?pageSize=5&pageNo=1
+http://localhost:8080/employees?pageSize=5&pageNo=2
+http://localhost:8080/employees?pageSize=5&pageNo=1&sortBy=email
+http://localhost:8080/employees?pageSize=5&pageNo=1&sortBy=firstName
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Understanding Hibernate First Level Cache with Example
+Caching is a facility provided by ORM frameworks which help users to get fast running web application, while help framework itself to reduce number of queries made to database in a single transaction. Hibernate achieves the second goal by implementing first level cache.
+Fist level cache in hibernate is enabled by default and you do not need to do anything to get this functionality working. In fact, you can not disable it even forcefully.
+Its easy to understand the first level cache if we understand the fact that it is associated with Session object. As we know session object is created on demand from session factory and it is lost, once the session is closed. Similarly, first level cache associated with session object is available only till session object is live. It is available to session object only and is not accessible to any other session object in any other part of application.
+ 
+Spring data JPA :
+First level cache is limited to the scope of the transaction . 
+If the transaction is completed and the same method / query is executed again, it would call the DB. If the call is made within the transaction, it would be fetched from the first level cache.
+Ideal place to start the transaction is the service layer, because then we can use the first level cache in the best way.
+
+Important facts
+1.	First level cache is associated with “session” object and other session objects in application can not see it.
+2.	The scope of cache objects is of session. Once session is closed, cached objects are gone forever.
+3.	First level cache is enabled by default and you can not disable it.
+4.	When we query an entity first time, it is retrieved from database and stored in first level cache associated with hibernate session.
+5.	If we query same object again with same session object, it will be loaded from cache and no sql query will be executed.
+6.	The loaded entity can be removed from session using evict() method. The next loading of this entity will again make a database call if it has been removed using evict() method.
+7.	The whole session cache can be removed using clear() method. It will remove all the entities stored in cache.
 
 
 
+How Hibernate Second Level Cache Works?
+
+Caching is facility provided by ORM frameworks which help users to get fast running web application, while help framework itself to reduce number of queries made to database in a single transaction. Hibernate also provide this caching functionality, in two layers.
+•	First level cache: This is enabled by default and works in session scope. Read more about hibernate first level cache.
+•	Second level cache: This is apart from first level cache which is available to be used globally in session factory scope.
+
+Above statement means, second level cache is created in session factory scope and is available to be used in all sessions which are created using that particular session factory.
+It also means that once session factory is closed, all cache associated with it die and cache manager also closed down.
+Further, It also means that if you have two instances of session factory (normally no application does that), you will have two cache managers in your application and while accessing cache stored in physical store, you might get unpredictable results like cache-miss.
+
+Hibernate first and second level cache
+
+How second level cache works : 
+Lets write all the facts point by point:
+1.	Whenever hibernate session try to load an entity, the very first place it look for cached copy of entity in first level cache (associated with particular hibernate session).
+2.	If cached copy of entity is present in first level cache, it is returned as result of load method.
+3.	If there is no cached entity in first level cache, then second level cache is looked up for cached entity.
+4.	If second level cache has cached entity, it is returned as result of load method. But, before returning the entity, it is stored in first level cache also so that next invocation to load method for entity will return the entity from first level cache itself, and there will not be need to go to second level cache again.
+5.	If entity is not found in first level cache and second level cache also, then database query is executed and entity is stored in both cache levels, before returning as response of load() method.
+6.	Second level cache validate itself for modified entities, if modification has been done through hibernate session APIs.
+7.	If some user or process make changes directly in database, the there is no way that second level cache update itself until “timeToLiveSeconds” duration has passed for that cache region. In this case, it is good idea to invalidate whole cache and let hibernate build its cache once again. You can use below code snippet to invalidate whole hibernate second level cache.
 
 
+#1. enable second level cache
+spring.jpa.properties.hibernate.cache.use_second_level_cache=true
+
+#2. specify the caching framework - EhCache
+spring.jpa.properties.hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.EhCacheRegionFactory
+
+#3. Only cache what I tell to cache.
+spring.jpa.properties.javax.persistence.sharedCache.mode=ENABLE_SELECTIVE
+
+logging.level.net.sf.ehcache=debug
+
+#4. What data to cache?
 
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+There are hooks to various repository methods : 
 
+@PostLoad
 
+@PostPersist
+
+@PostRemove
+
+@PostUpdate
+
+@PrePersist
+
+@PreRemove
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Embedded and Embeddable : 
+
+If there is an object in my Student class, lets say Address, but I want it embedded always in my student object. I do not want it one to one mapped etc, I want it embedded always.
+Then I use @embedded on the field inside the entity class, and @embeddable on the class which has to be embedded.
+
+Using embedded, the java object is a separate object in the entity, but internally, the fields of the embedded object, i.e. Address in this case, they are just new columns in the same entity. A new entity is not created for that object, because it is embedded.
+So the city, street etc would become part of the student table only, but when read, hibernate would convert it into a separate object inside the student class .
+
+@PreUpdate
