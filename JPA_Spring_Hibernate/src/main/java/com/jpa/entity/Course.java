@@ -15,6 +15,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -44,6 +46,7 @@ public class Course {
 	// Fetch type is lazy by default for one to many relations, on the side where
 	// many relations have to be fetched
 	@OneToMany(mappedBy = "course")
+	@Cache (usage=CacheConcurrencyStrategy.TRANSACTIONAL)
 	private List<Review> reviews = new ArrayList<Review>();
 
 	// in many to many, there is no owning side of the relationship, so we can

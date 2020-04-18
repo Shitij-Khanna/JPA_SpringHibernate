@@ -102,6 +102,7 @@ public class CourseRepositoryTest {
 	}
 	
 	@Test
+	@Transactional
 	public void testCache() {
 		int sizeBeforeCache = CacheManager.ALL_CACHE_MANAGERS.get(0)
 				  .getCache("com.jpa.entity.Course").getSize();
@@ -111,6 +112,10 @@ public class CourseRepositoryTest {
 		logger.info("Size of cache : {}" + size);
 		
 		Course course2 = repository.findById(10001L);
+		course2.getReviews();
+		course2.getReviews();
+		course2.getReviews();
+		course2.getStudents();
 		repository.findById(10001L);
 		repository.findById(10001L);
 		repository.findById(10001L);
