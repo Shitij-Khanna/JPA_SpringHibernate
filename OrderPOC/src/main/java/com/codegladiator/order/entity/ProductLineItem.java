@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -44,7 +45,7 @@ public class ProductLineItem {
 	@Column(name = "OFFERPRODUCTREFDOMAINNAME")
 	private String domainName;
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ownerid")
 	@MapKey(name = "id")
 	private Map<String, PLIAttributes> pliAttributes;

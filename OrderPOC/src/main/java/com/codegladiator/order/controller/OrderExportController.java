@@ -1,6 +1,9 @@
 package com.codegladiator.order.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,8 +52,13 @@ public class OrderExportController {
 	}
 
 	@GetMapping(path = CommonConstants.FIND_ALL_PLIS_TO_EXPORT)
-	public ResponseEntity<List<ProductLineItem>> getPLIsToExport() {
+	public ResponseEntity<List<ProductLineItem>> getPLIsToExport(HttpServletResponse httpServletResponse) {
 		List<ProductLineItem> pliList = pliServiceImpl.getPLIsToExport();
+		try {
+			pliServiceImpl.writeToCsv(pliList, httpServletResponse);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(pliList);
 	}
 
